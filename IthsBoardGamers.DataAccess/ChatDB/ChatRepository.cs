@@ -24,7 +24,7 @@ public class ChatRepository : IRepository<ChatMessageDto>
         await _chatCollection.InsertOneAsync(new ChatMessageModel()
         {
             Message = item.Message,
-            Sender = item.Sender,
+            SenderEmail = item.Sender.Email,
             TimeSent = item.TimeSent
         });
     }
@@ -35,7 +35,7 @@ public class ChatRepository : IRepository<ChatMessageDto>
             .Select(m => new ChatMessageModel
             {
                 Message = m.Message,
-                Sender = m.Sender,
+                SenderEmail = m.Sender.Email,
                 TimeSent = m.TimeSent
             })
         );
@@ -48,7 +48,7 @@ public class ChatRepository : IRepository<ChatMessageDto>
             .Select(m => new ChatMessageDto()
             {
                 Message = m.Message, 
-                Sender = m.Sender, 
+                Sender = new UserDto() {Email = m.SenderEmail}, 
                 TimeSent = m.TimeSent
             });
     }

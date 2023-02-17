@@ -1,4 +1,4 @@
-﻿namespace IthsBoardGamers.DataAccess.ChatDB;
+﻿namespace IthsBoardGamers.DataAccess;
 
 public class DatabaseOptions
 {

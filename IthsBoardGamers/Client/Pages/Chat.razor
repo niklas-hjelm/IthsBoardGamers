@@ -62,7 +62,7 @@
             _navigationManager.NavigateTo("");
             return;
         }
-        if (string.IsNullOrEmpty(CurrentChatMessage.Sender))
+        if (CurrentChatMessage.Sender is null)
         {
             var emailClaim = user.FindFirst(p => p.Type == "preferred_username");
             if (emailClaim is null)
@@ -70,6 +70,8 @@
                 _navigationManager.NavigateTo("");
                 return;
             }
+
+            CurrentChatMessage.Sender = new UserDto() {Email = emailClaim.Value, Name = user.Identity.Name};
         }
 
         CurrentChatMessage.TimeSent = DateTime.Now;

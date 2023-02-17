@@ -8,9 +8,9 @@ public class ChatMessageModel
     [BsonId]
     public ObjectId Id { get; set; }
     [BsonElement]
-    public string Sender { get; set; }
+    public string SenderEmail { get; set; }
     [BsonElement]
-    public string Message { get; set; }
+    public string? Message { get; set; }
     [BsonElement]
     public DateTime TimeSent { get; set; }
 }
