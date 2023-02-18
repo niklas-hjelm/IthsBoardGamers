@@ -1,12 +1,15 @@
-﻿namespace IthsBoardGamers.DataAccess.Services;
+﻿using IthsBoardGamers.Shared;
+using IthsBoardGamers.Shared.DTOs;
+
+namespace IthsBoardGamers.DataAccess.Services;
 
 public interface IRepository<T>
 {
-    Task AddAsync(T item);
-    Task AddManyAsync(IEnumerable<T> items);
-    Task<IEnumerable<T>> GetAllAsync();
-    Task<T> GetAsync(object id);
-    Task<T> UpdateAsync(T item, object id);
-    Task DeleteAsync(object id);
-    Task DeleteManyAsync(IEnumerable<T> items);
+    Task<ServiceResponse<T?>> AddAsync(T? item);
+    Task<ServiceResponse<T?[]?>> AddManyAsync(T?[]? items);
+    Task<ServiceResponse<T?[]?>> GetAllAsync();
+    Task<ServiceResponse<T?>> GetAsync(object id);
+    Task<ServiceResponse<T?>> UpdateAsync(T? item, object id);
+    Task<ServiceResponse<T?>> DeleteAsync(object id);
+    Task<ServiceResponse<T?[]?>> DeleteManyAsync(T?[]? items);
 }

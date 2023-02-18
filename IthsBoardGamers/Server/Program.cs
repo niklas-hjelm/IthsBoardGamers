@@ -1,5 +1,6 @@
 using IthsBoardGamers.DataAccess;
 using IthsBoardGamers.DataAccess.ChatDB;
+using IthsBoardGamers.DataAccess.GamesDB;
 using IthsBoardGamers.DataAccess.Services;
 using IthsBoardGamers.Server.Extensions;
 using IthsBoardGamers.Server.Hubs;
@@ -17,6 +18,7 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddOptions<DatabaseOptions>().Bind(builder.Configuration.GetSection(DatabaseOptions.SectionName));
 builder.Services.AddScoped<IRepository<ChatMessageDto>, ChatRepository>();
+builder.Services.AddScoped<IRepository<BoardGameDTO>, BoardGamesRepository>();
 
 builder.Services.AddSignalR();
 
@@ -43,9 +45,8 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapEndpoints();
-
-app.MapHub<ChatHub>("/hubs/chatHub").AllowAnonymous();
+app.MapChatEndpoints();
+app.MapGamesEndpoints();
 
 app.MapRazorPages();
 

@@ -1,12 +1,110 @@
 ﻿@page "/Games"
 @using Microsoft.AspNetCore.Authorization
+@using IthsBoardGamers.Shared.DTOs
+@using IthsBoardGamers.Shared
+
+@inject HttpClient _client;
+
 @attribute [Authorize]
 <h3>Games</h3>
 
-<table>
-    
+<h3>Add new Game</h3>
+<EditForm Model="NewGame" OnSubmit="AddGame">
+    <div class="row mb-3">
+        <label>Name</label>
+        <InputText class="form-control" @bind-Value="NewGame.Name"></InputText>
+    </div>
+    <div class="row mb-3">
+        <label>Minimum Players</label>
+        <InputNumber class="form-control" @bind-Value="NewGame.MinimumPlayers"></InputNumber>
+    </div>
+    <div class="row mb-3">
+        <label>Maximum Players</label>
+        <InputNumber class="form-control" @bind-Value="NewGame.MaximumPlayers"></InputNumber>
+    </div>
+    <div class="row mb-3">
+        <label>Playtime(minutes)</label>
+        <InputNumber class="form-control" @bind-Value="NewGame.Playtime"></InputNumber>
+    </div>
+    <div class="row mb-3">
+        <label>Description</label>
+        <InputTextArea class="form-control" @bind-Value="NewGame.Description"></InputTextArea>
+    </div>
+    <button type="submit" class="btn btn-primary">Save changes</button>
+</EditForm>
+<hr class="mt-2 mb-2" />
+<table class="table table-dark table-striped">
+    <thead>
+        <tr class="">
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Players(min-max)</th>
+            <th scope="col">Playtime(minutes)</th>
+            <th scope="col">Owner</th>
+        </tr>
+    </thead>
+    <tbody>
+        <Virtualize Items="BoardGames.OrderBy(g => g.Name).ToArray()" Context="game">
+            <tr>
+                <th scope="row">@game.Name</th>
+                <td>@game.Description</td>
+                <td>@game.MinimumPlayers - @game.MaximumPlayers</td>
+                <td>@game.Playtime</td>
+                <td>@game.Owner.Email</td>
+            </tr>
+        </Virtualize>
+    </tbody>
 </table>
 
+
+
 @code {
+    public List<BoardGameDTO> BoardGames { get; set; } = new();
+    public BoardGameDTO NewGame { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await _client.GetFromJsonAsync<ServiceResponse<BoardGameDTO[]>>("allGames");
+
+        if (response?.Data != null && response.Data.Length > 0)
+        {
+            BoardGames = new List<BoardGameDTO>(response.Data);
+        }
+        else
+        {
+            BoardGames.AddRange(new List<BoardGameDTO>()
+            {
+                new()
+                {
+                    Name= "Test",
+                    Description = "lorem blablabla",
+                    MaximumPlayers = 4,
+                    MinimumPlayers = 2,
+                    Owner = new UserDto(){Name = "Niklas", Email = "test@test.com"},
+                    Playtime = 40
+                }
+            });
+        }
+
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task AddGame()
+    {
+        NewGame.Owner = new UserDto() { Email = "test@test.com", Name = "test" };
+        var response = await _client.PostAsJsonAsync(_client.BaseAddress + "saveGame", NewGame);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var result = await _client.GetFromJsonAsync<ServiceResponse<BoardGameDTO[]>>("allGames");
+
+            if (result?.Data != null && result.Data.Length > 0)
+            {
+                BoardGames = new List<BoardGameDTO>(result.Data);
+            }
+        }
+        NewGame = new();
+    }
 
 }
