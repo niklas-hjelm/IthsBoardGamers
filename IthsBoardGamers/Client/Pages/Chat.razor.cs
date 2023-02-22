@@ -52,7 +52,7 @@ public partial class Chat : ComponentBase
             CurrentChatMessage.Sender = new UserDto() { Email = emailClaim.Value, Name = user.Identity.Name };
         }
 
-        CurrentChatMessage.TimeSent = DateTime.Now;
+        CurrentChatMessage.TimeSent = DateTime.UtcNow;
         await _chatHub.SendAsync("BroadcastMessage", CurrentChatMessage);
         CurrentChatMessage.Message = string.Empty;
     }

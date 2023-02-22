@@ -1,7 +1,7 @@
-﻿using IthsBoardGamers.DataAccess.ChatDB;
-using IthsBoardGamers.DataAccess.Services;
+﻿using IthsBoardGamers.DataAccess.Services;
 using IthsBoardGamers.Server.Hubs;
 using IthsBoardGamers.Shared.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IthsBoardGamers.Server.Extensions;
 
